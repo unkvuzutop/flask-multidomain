@@ -1,0 +1,53 @@
+[30.06.14, 10:23:42] batonych: Задание:
+
+Написать с помощью Flask + SQLAlchemy веб-приложение, которое будет висеть на нескольких доменах.
+Содержимое на доменах может быть трёх типов. У каждого из типов должны быть различные view'шки и шаблоны,
+не зависящие от других типов сайтов. Т.е. на одном приложении должны висеть три (или более) кардинально разных сайта.
+Список доменов и их типов должен храниться в БД и, соответственно, приложением оттуда подгружаться.
+Должна быть возможность сделать несколько доменов для одного типа сайта.
+
+Бонус:
+Написать функцию, аналогичную flask.url_for, которая будет генерировать полные ссылки для другого
+(указанного в аргументе функции) типа сайта.
+Если сайтов указанного типа больше одного - генерировать ссылку на случайный из них.
+[30.06.14, 10:23:58] batonych: все ли понятно? бюджет-сроки на тест?
+
+
+rom flask import _request_ctx_stack
+import re
+
+class MetaInfo(object):
+
+    def __init__(self, app=None):
+        if app is not None:
+            self.init_app(app)
+
+    def before_request(self):
+        ctx = _request_ctx_stack.top
+        sites = self.app.config['META'].keys()
+        for site in sites:
+            if site in ctx.request.host:
+                self.app.meta = self.app.config['META'][site]
+                break
+
+    def init_app(self, app):
+        self.app = app
+        self.app.before_request(self.before_request)
+
+
+and then in the config file you can store site relevant infor:
+
+ META = {
+    'localhost': { # dict of development stuff
+    ...
+    },
+    'example1.com' { # dict of example1 stuff
+    ...
+    },
+    'example2.com' { # dict of example2 stuff
+    ...
+    },
+    'example3.com' { # dict of example3 stuff
+    ...
+    },
+}
