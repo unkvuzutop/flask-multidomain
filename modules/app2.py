@@ -1,8 +1,8 @@
-from flask import Blueprint
+from flask import Blueprint, render_template
 
 app2 = Blueprint('app2', __name__,
-                        template_folder='templates/app2', url_prefix='/app2')
+                        template_folder='templates', url_prefix='/app2')
 
-@app2.route('/zindex')
+@app2.route('/')
 def index():
-    return 'app2.index'
+    return render_template('app2/index.html')

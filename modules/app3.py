@@ -1,8 +1,12 @@
-from flask import Blueprint
+from flask import Blueprint, render_template
 
 app3 = Blueprint('app3', __name__,
-                        template_folder='templates/app3', url_prefix='/app3')
+                        template_folder='templates', url_prefix='/app3')
 
 @app3.route('/')
 def index():
-    return 'app3.index'
+    return render_template('app3/index.html')
+
+@app3.route('/another-link/')
+def another():
+    return 'another'
